@@ -1,28 +1,39 @@
 package org.ageuxo.numidium.blockentity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.ageuxo.numidium.element.LogicElement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class ElementBlockEntity extends BlockEntity {
 
-    protected List<LogicElement> elements = new ArrayList<>();
+    protected LogicElement element;
 
-    public ElementBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, LogicElement... elements) {
+    public ElementBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, LogicElement element) {
         super(type, pos, blockState);
-        this.elements.addAll(Arrays.asList(elements));
+        this.element = element;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, ElementBlockEntity blockEntity) {
-        for (LogicElement logicElement : blockEntity.elements) {
-            logicElement.tick(level, pos, state, blockEntity);
-        }
+        blockEntity.element.tick(level, pos, state, blockEntity);
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("element", element.saveData());
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        element.loadData(tag.get("element"));
     }
 }
