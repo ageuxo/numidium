@@ -1,5 +1,6 @@
 package org.ageuxo.numidium;
 
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -15,6 +16,10 @@ public class Numidium {
 
     public Numidium(IEventBus modEventBus, ModContainer modContainer) {
 
+    }
+
+    public static ResourceLocation modRL(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
 }
