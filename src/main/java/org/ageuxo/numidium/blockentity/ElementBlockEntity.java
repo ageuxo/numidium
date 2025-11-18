@@ -11,8 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.ageuxo.numidium.element.LogicElement;
 import org.ageuxo.numidium.element.data.ElementDataMap;
 import org.ageuxo.numidium.element.data.ElementDataPatch;
+import org.ageuxo.numidium.element.data.ElementDataType;
 import org.ageuxo.numidium.element.data.PatchedElementDataMap;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
@@ -33,10 +35,29 @@ public abstract class ElementBlockEntity extends BlockEntity {
         return builder.build();
     }
 
+    /**
+     * Override this to define the types of ElementData available to the LogicElements in this BlockEntity
+     */
     protected abstract void defineElementData(ElementDataMap.Builder builder);
 
     public static void tick(Level level, BlockPos pos, BlockState state, ElementBlockEntity blockEntity) {
         blockEntity.element.tick(level, pos, state, blockEntity);
+    }
+
+    /**
+     * Get value assigned to type in this BlockEntity's ElementDataMap
+     * @return value of this type
+     */
+    public <T> T get(ElementDataType<T> type) {
+        return elementData.get(type);
+    }
+
+    /**
+     * Set value assigned to type in this BlockEntity's ElementDataMap
+     * @return previous value of this type
+     */
+    public <T> T set(ElementDataType<T> type, @Nullable T value) {
+        return elementData.set(type, value);
     }
 
     @Override
