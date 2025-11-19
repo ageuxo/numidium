@@ -17,9 +17,9 @@ import java.util.function.Supplier;
 @ParametersAreNonnullByDefault
 public class ElementBlock extends Block implements EntityBlock {
 
-    protected final Supplier<BlockEntityType<?>> type;
+    protected final Supplier<? extends BlockEntityType<?>> type;
 
-    public ElementBlock(Properties properties, Supplier<BlockEntityType<?>> type) {
+    public ElementBlock(Properties properties, Supplier<? extends BlockEntityType<?>> type) {
         super(properties);
         this.type = type;
     }
@@ -33,6 +33,6 @@ public class ElementBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return (lvl, pos, bState, blockEntity) -> ElementBlockEntity.tick(lvl, pos, bState, (ElementBlockEntity) blockEntity);
+        return (lvl, pos, bState, blockEntity) -> ElementBlockEntity.tick((ElementBlockEntity) blockEntity);
     }
 }
