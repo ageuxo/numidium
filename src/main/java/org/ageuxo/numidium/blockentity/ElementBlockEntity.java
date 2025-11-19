@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,8 +39,8 @@ public abstract class ElementBlockEntity extends BlockEntity {
      */
     protected abstract void defineElementData(ElementDataMap.Builder builder);
 
-    public static void tick(Level level, BlockPos pos, BlockState state, ElementBlockEntity blockEntity) {
-        blockEntity.element.tick(level, pos, state, blockEntity);
+    public static void tick(ElementBlockEntity blockEntity) {
+        blockEntity.element.tick(blockEntity);
     }
 
     /**
@@ -63,14 +62,12 @@ public abstract class ElementBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.put("element", element.saveData());
         tag.put("elementData", ElementDataPatch.CODEC.encodeStart(NbtOps.INSTANCE, elementData.asPatch()).getPartialOrThrow());
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        element.loadData(tag.get("element"));
         Optional<ElementDataPatch> patch = ElementDataPatch.CODEC.parse(NbtOps.INSTANCE, tag.get("elementData")).result();
         elementData = PatchedElementDataMap.fromPatch(createElementDataPrototype(), patch.orElse(ElementDataPatch.EMPTY));
     }
