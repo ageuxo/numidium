@@ -186,3 +186,13 @@ idea {
         downloadJavadoc = true
     }
 }
+
+sourceSets {
+    create("samples") {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        java {
+           srcDirs = ['src/samples']
+        }
+    }
+}
